@@ -1,0 +1,88 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Ref to build (for Pull Requests, use refs/pull/NNN/head)'
+        required: true
+  release:
+    types:
+    - published
+
+jobs:
+  source:
+    name: Source
+
+    uses: ./.github/workflows/release-source.yml
+    secrets: inherit
+
+  linux-legacy:
+    name: Linux (Legacy)
+    needs: source
+
+    uses: ./.github/workflows/release-linux-legacy.yml
+    secrets: inherit
+    with:
+      discord_game_sdk_version: 3.2.1
+
+  linux:
+    name: Linux (Generic)
+    needs: source
+
+    uses: ./.github/workflows/release-linux.yml
+    secrets: inherit
+    with:
+      discord_game_sdk_version: 3.2.1
+
+  macos:
+    name: MacOS
+    needs: source
+
+    uses: ./.github/workflows/release-macos.yml
+    secrets: inherit
+    with:
+      discord_game_sdk_version: 3.2.1
+
+  windows:
+    name: Windows
+    needs: source
+
+    uses: ./.github/workflows/release-windows.yml
+    secrets: inherit
+    with:
+      discord_game_sdk_version: 3.2.1
+
+  upload-cdn:
+    name: Upload (CDN)
+    needs:
+    - source
+    - linux-legacy
+    - linux
+    - macos
+    - windows
+
+    if: github.event_name == 'release'
+
+    uses: ./.github/workflows/upload-cdn.yml
+    secrets: inherit
+
+    with:
+      version: ${{ needs.source.outputs.version }}
+
+  upload-github:
+    name: Upload (GitHub)
+    needs:
+    - source
+    - linux-legacy
+    - linux
+    - macos
+    - windows
+
+    if: github.event_name == 'release'
+
+    uses: ./.github/workflows/upload-github.yml
+    secrets: inherit
+
+    with:
+      version: ${{ needs.source.outputs.version }}

@@ -1,0 +1,107 @@
+name: Release (Linux)
+
+on:
+  workflow_call:
+    inputs:
+      discord_game_sdk_version:
+        description: 'Discord Game SDK version to use'
+        type: string
+        required: true
+
+jobs:
+  linux:
+    name: Linux (Generic)
+
+    runs-on: ubuntu-latest
+    container:
+      # manylinux_2_28 is based on AlmaLinux 8, and already has a lot of things
+      # installed and preconfigured. It makes it easier to build OpenTTD.
+      # This distro is based on glibc 2.28, released in 2018.
+      image: quay.io/pypa/manylinux_2_28_x86_64
+
+    steps:
+    - name: Download source
+      uses: actions/download-artifact@v3
+      with:
+        name: internal-source
+
+    - name: Unpack source
+      run: |
+        tar -xf source.tar.gz --strip-components=1
+
+    - name: Install Rust toolchain
+      uses: dtolnay/rust-toolchain@stable
+
+    - name: Enable Rust cache
+      uses: Swatinem/rust-cache@v2
+
+    - name: Install dependencies
+      run: |
+        echo "::group::Install system dependencies"
+        yum install -y \
+          zip \
+          python3.11-pip \
+          # EOF
+        echo "::endgroup::"
+
+        echo "::group::Install python dependencies"
+        python3 -m pip install -U pip
+        python3 -m pip install cryptography
+        echo "::endgroup::"
+
+        echo "::group::Install breakpad dependencies"
+        cargo install dump_syms
+        echo "::endgroup::"
+
+    - name: Install Discord SDK
+      shell: bash
+      run: |
+        ./download-sdk.sh ${{ inputs.discord_game_sdk_version }}
+
+    - name: Install GCC problem matcher
+      uses: ammaraskar/gcc-problem-matcher@master
+
+    - name: Build
+      run: |
+        mkdir -p build
+        cd build
+
+        echo "::group::CMake"
+        cmake ${GITHUB_WORKSPACE} \
+          -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+          -DDISCORD_APPLICATION_ID=${{ secrets.DISCORD_APPLICATION_ID }} \
+          # EOF
+        echo "::endgroup::"
+
+        echo "::group::Build"
+        echo "Running on $(nproc) cores"
+        cmake --build . -j $(nproc)
+        echo "::endgroup::"
+
+    - name: Create breakpad symbols
+      run: |
+        cd build
+        dump_syms ./libdiscord-social.so --inlines --store symbols
+
+    - name: Create bundles
+      run: |
+        cd ${GITHUB_WORKSPACE}/build
+        echo "::group::Run CPack"
+        cpack
+        echo "::endgroup::"
+      env:
+        OPENTTD_PLUGIN_PRIVATE_KEY: ${{ secrets.OPENTTD_PLUGIN_PRIVATE_KEY }}
+
+    - name: Store bundles
+      uses: actions/upload-artifact@v3
+      with:
+        name: discord-social-linux-generic
+        path: build/bundles
+        retention-days: 5
+
+    - name: Store symbols
+      uses: actions/upload-artifact@v3
+      with:
+        name: symbols-linux-generic
+        path: build/symbols
+        retention-days: 5
