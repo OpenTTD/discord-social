@@ -1,0 +1,18 @@
+#!/bin/bash
+
+result=$(osascript -e 'display dialog "OpenTTD''s Discord Integration Plugin will be installed on your computer. Do you want to continue?" buttons {"Yes", "No"} default button "Yes"')
+
+if [ "${result}" != "button returned:Yes" ]; then
+    exit 0
+fi
+
+RESOURCES_PATH=$(dirname "${0}")/../Resources
+OPENTTD_SOCIAL_PATH=${HOME}/Documents/OpenTTD/social_integration/discord
+
+mkdir -p "${OPENTTD_SOCIAL_PATH}"
+
+cp "${RESOURCES_PATH}/discord_game_sdk.dylib" "${OPENTTD_SOCIAL_PATH}/"
+cp "${RESOURCES_PATH}/libdiscord-social.dylib" "${OPENTTD_SOCIAL_PATH}/"
+cp "${RESOURCES_PATH}/libdiscord-social.dylib.sig" "${OPENTTD_SOCIAL_PATH}/"
+
+osascript -e 'display dialog "OpenTTD''s Discord Integration Plugin has been installed to the OpenTTD folder in your Documents folder." buttons {"OK"} default button "OK"'

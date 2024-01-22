@@ -1,0 +1,65 @@
+name: Upload (GitHub)
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+
+jobs:
+  upload:
+    name: Upload (GitHub)
+
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Download bundle (Source)
+      uses: actions/download-artifact@v3
+      with:
+        name: discord-social-source
+        path: discord-social-source
+
+    - name: Download bundle (Windows x86)
+      uses: actions/download-artifact@v3
+      with:
+        name: discord-social-windows-x86
+        path: discord-social-windows-x86
+
+    - name: Download bundle (Windows x64)
+      uses: actions/download-artifact@v3
+      with:
+        name: discord-social-windows-x64
+        path: discord-social-windows-x64
+
+    - name: Download bundle (MacOS)
+      uses: actions/download-artifact@v3
+      with:
+        name: discord-social-macos-universal
+        path: discord-social-macos-universal
+
+    - name: Download bundle (Linux, Legacy)
+      uses: actions/download-artifact@v3
+      with:
+        name: discord-social-linux-legacy
+        path: discord-social-linux-legacy
+
+    - name: Download bundle (Linux, Generic)
+      uses: actions/download-artifact@v3
+      with:
+        name: discord-social-linux-generic
+        path: discord-social-linux-generic
+
+    - name: Upload to GitHub
+      run: |
+        # "gh" only works automatically if run from a git repository.
+        git init
+        git remote add origin ${{ github.event.repository.html_url }}
+
+        # Don't upload some files
+        rm discord-social-source/README.md
+        rm discord-social-source/released.txt
+
+        gh release upload ${{ inputs.version }} discord-social-*/*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
