@@ -15,37 +15,37 @@ jobs:
 
     steps:
     - name: Download bundle (Source)
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: discord-social-source
         path: discord-social-source
 
     - name: Download bundle (Windows x86)
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: discord-social-windows-x86
         path: discord-social-windows-x86
 
     - name: Download bundle (Windows x64)
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: discord-social-windows-x64
         path: discord-social-windows-x64
 
     - name: Download bundle (MacOS)
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: discord-social-macos-universal
         path: discord-social-macos-universal
 
     - name: Download bundle (Linux, Legacy)
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: discord-social-linux-legacy
         path: discord-social-linux-legacy
 
     - name: Download bundle (Linux, Generic)
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: discord-social-linux-generic
         path: discord-social-linux-generic

@@ -18,7 +18,7 @@ jobs:
 
     steps:
     - name: Download source
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: internal-source
 
@@ -173,14 +173,14 @@ jobs:
         mv _CPack_Packages/*/Bundle/discord-social-*.zip bundles/
 
     - name: Store bundles
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: discord-social-macos-universal
         path: build-x64/bundles
         retention-days: 5
 
     - name: Store symbols
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: symbols-macos-universal
         path: build-x64/symbols
