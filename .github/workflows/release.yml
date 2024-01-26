@@ -17,15 +17,6 @@ jobs:
     uses: ./.github/workflows/release-source.yml
     secrets: inherit
 
-  linux-legacy:
-    name: Linux (Legacy)
-    needs: source
-
-    uses: ./.github/workflows/release-linux-legacy.yml
-    secrets: inherit
-    with:
-      discord_game_sdk_version: 3.2.1
-
   linux:
     name: Linux (Generic)
     needs: source
@@ -57,7 +48,6 @@ jobs:
     name: Upload (CDN)
     needs:
     - source
-    - linux-legacy
     - linux
     - macos
     - windows
@@ -74,7 +64,6 @@ jobs:
     name: Upload (GitHub)
     needs:
     - source
-    - linux-legacy
     - linux
     - macos
     - windows
