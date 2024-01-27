@@ -1,7 +1,9 @@
 string(TIMESTAMP CURRENT_YEAR "%Y")
 
 set(CPACK_BUNDLE_NAME "OpenTTD-${PROJECT_NAME}")
+set(CPACK_BUNDLE_ICON "${CMAKE_SOURCE_DIR}/os/macos/openttd.icns")
 set(CPACK_BUNDLE_PLIST "${CMAKE_CURRENT_BINARY_DIR}/Info.plist")
+set(CPACK_DMG_BACKGROUND_IMAGE "${CMAKE_SOURCE_DIR}/os/macos/splash.png")
 set(CPACK_DMG_FORMAT "UDBZ")
 set(CPACK_DMG_DISABLE_APPLICATIONS_SYMLINK ON)
 # This seems to be a bit buggy, as CPACK_APPLE_BUNDLE_ID is only referenced once in the source:
