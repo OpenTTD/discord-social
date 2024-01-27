@@ -135,6 +135,7 @@ jobs:
         echo "::endgroup::"
       env:
         OPENTTD_PLUGIN_PRIVATE_KEY: ${{ secrets.OPENTTD_PLUGIN_PRIVATE_KEY }}
+        APPLE_DEVELOPER_CERTIFICATE_ID: ${{ secrets.APPLE_DEVELOPER_CERTIFICATE_ID }}
 
     - name: Notarize
       env:
