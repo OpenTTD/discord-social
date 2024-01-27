@@ -44,21 +44,21 @@ jobs:
     with:
       discord_game_sdk_version: 3.2.1
 
-  upload-cdn:
-    name: Upload (CDN)
-    needs:
-    - source
-    - linux
-    - macos
-    - windows
+  # upload-cdn:
+  #   name: Upload (CDN)
+  #   needs:
+  #   - source
+  #   - linux
+  #   - macos
+  #   - windows
 
-    if: github.event_name == 'release'
+  #   if: github.event_name == 'release'
 
-    uses: ./.github/workflows/upload-cdn.yml
-    secrets: inherit
+  #   uses: ./.github/workflows/upload-cdn.yml
+  #   secrets: inherit
 
-    with:
-      version: ${{ needs.source.outputs.version }}
+  #   with:
+  #     version: ${{ needs.source.outputs.version }}
 
   upload-github:
     name: Upload (GitHub)
