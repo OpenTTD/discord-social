@@ -130,6 +130,11 @@ jobs:
         lipo -create -output ${GITHUB_WORKSPACE}/lib/x86_64/libdiscord_game_sdk.dylib ../build-*/install/discord_game_sdk.dylib
         echo "::endgroup::"
 
+        echo "::group::Sign binaries"
+        codesign --deep -f --options runtime -s "${{ secrets.APPLE_DEVELOPER_CERTIFICATE_ID }}" -i org.openttd.discord-social libdiscord-social.dylib
+        codesign --deep -f --options runtime -s "${{ secrets.APPLE_DEVELOPER_CERTIFICATE_ID }}" -i org.openttd.discord-social ${GITHUB_WORKSPACE}/lib/x86_64/libdiscord_game_sdk.dylib
+        echo "::endgroup::"
+
         echo "::group::Run CPack"
         cpack
         echo "::endgroup::"
