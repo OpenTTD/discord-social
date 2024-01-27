@@ -38,12 +38,6 @@ jobs:
         name: discord-social-macos-universal
         path: discord-social-macos-universal
 
-    - name: Download bundle (Linux, Legacy)
-      uses: actions/download-artifact@v4
-      with:
-        name: discord-social-linux-legacy
-        path: discord-social-linux-legacy
-
     - name: Download bundle (Linux, Generic)
       uses: actions/download-artifact@v4
       with:
